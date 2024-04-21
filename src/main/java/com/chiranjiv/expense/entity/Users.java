@@ -1,11 +1,14 @@
 package com.chiranjiv.expense.entity;
 
 import java.util.Date;
+
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +34,7 @@ public class Users {
 	
 	@CreationTimestamp
 	@JsonIgnore
+	@Column(name="createdate", nullable = false, updatable = false)
 	private Date createdate;
 	
 	@JsonIgnore
