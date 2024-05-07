@@ -5,17 +5,22 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.crypto.SecretKey;
+
 @Component
 public class JwtTokenHelper {
 
-	@Value("${jwt.secret}")
-    private String secret;
+    private static final String secret = "e1aMspRPl7PEv7FgkPu6zqlyG3pOdctvCrpDzHklZcS0jFivsIt7y+PKpoVLTA6+M1FXw6sUWLmRAFmlRMmwIQ==";
+	
+	private static final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
     @Value("${jwt.token.validity}")
     private long tokenValidity;
@@ -68,4 +73,21 @@ public class JwtTokenHelper {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+    
+    
+//    public static String doGenerateForMonthlyTrack(Integer userId,String propId) {
+//		Date date = new Date();
+//	    long t = date.getTime();
+//        return Jwts.builder()
+//                .claim("encodedid", propId)
+//                .setId(userId+"")
+//                .setSubject("mp")
+//                .setExpiration(new Date( (t + (1000*60*60*24)) ))
+//                .setIssuedAt(new Date(t))
+//                .signWith(key,SignatureAlgorithm.HS256)
+//                .compact();
+//
+//	}
+    
+    
 }

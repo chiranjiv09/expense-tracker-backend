@@ -68,14 +68,13 @@ public class UsersServiceImpl implements UsersService {
 			UserDetails userDetails = userDetailsService.loadUserByUsername(user.getMobile()+"");
 			if(map.get("status").equals(true)){
 				String token = this.helper.generateToken(userDetails);
-		        map.put(token, token);
+		        map.put("token", token);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			map.put("status", false);
 			map.put("message", "Exception while login");
 		}
-		
         return map;
 	}
 
