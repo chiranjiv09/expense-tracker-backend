@@ -29,7 +29,7 @@ public class Expense {
 	private Double price;
 	@CreationTimestamp
 	private Date expenseDate;
-	private Boolean isActive;
+	private String isActive;
 	
 	@CreationTimestamp
 	@JsonIgnore

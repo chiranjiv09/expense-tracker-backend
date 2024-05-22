@@ -2,7 +2,6 @@ package com.chiranjiv.expense.entity;
 
 import java.util.Collection;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,61 +19,74 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Users implements UserDetails{
+public class Users implements UserDetails {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userId;
+    
+	private String name;
 	
-	private String userName;
-	
-	private Long mobile;
-	
-	private String password;
-	
-	@JsonIgnore
-	private String isActive;
-	
-	@CreationTimestamp
-	@JsonIgnore
-	@Column(name="createdate", nullable = false, updatable = false)
-	private Date createdate;
-	
-	@JsonIgnore
-	@UpdateTimestamp
-	private Date modidate;
+    private String userName;
+    
+    private Long mobile;
+    
+    private String password;
+    
+    @JsonIgnore
+    @Column(nullable = false)
+    private String isActive;
+    
+    @CreationTimestamp
+    @JsonIgnore
+    @Column(name = "createdate", nullable = false, updatable = false)
+    private Date createdate;
+    
+    @JsonIgnore
+    @UpdateTimestamp
+    private Date modidate;
 
-	 @Override
-	    public Collection<? extends GrantedAuthority> getAuthorities() {
-	        // Return the authorities/roles assigned to the user (if applicable)
-	        return null;
-	    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Return authorities/roles of the user
+        return null;
+    }
 
-	    @Override
-	    public String getUsername() {
-	        return userName; // Return the username of the user
-	    }
+    @Override
+    public String getPassword() {
+        return this.password; // or your equivalent field
+    }
 
-	    @Override
-	    public boolean isAccountNonExpired() {
-	        return true; // Assuming account expiration is not implemented, return true
-	    }
+    @Override
+    public String getUsername() {
+        return (this.mobile+""); // or your equivalent field
+    }
 
-	    @Override
-	    public boolean isAccountNonLocked() {
-	        return true; // Return the account status to determine if it's locked
-	    }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-	    @Override
-	    public boolean isCredentialsNonExpired() {
-	        return true; // Assuming credential expiration is not implemented, return true
-	    }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-	    @Override
-	    public boolean isEnabled() {
-	        return true; // Return the account status to determine if it's enabled
-	    }
-	
-	
-	
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+    
+    
+    
 }

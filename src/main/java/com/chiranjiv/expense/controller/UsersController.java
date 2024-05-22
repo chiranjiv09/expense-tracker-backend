@@ -48,7 +48,7 @@ public class UsersController {
 			map = usersService.userLoginAuthentication(map,user);
 			if(map.containsKey("token")) {
 	        	Cookie passwordReset = new Cookie("token", map.get("token")+"");
-	        	passwordReset.setMaxAge(3600);
+	        	passwordReset.setMaxAge(1000*24*60*60);
 	        	passwordReset.setHttpOnly(true);
 	        	passwordReset.setSecure(true);
 	        	passwordReset.setPath("/");

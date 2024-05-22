@@ -47,6 +47,7 @@ public class UsersServiceImpl implements UsersService {
 				u = new Users();
 			}
 			u.setMobile(user.getMobile());
+			u.setName(user.getName());
 			u.setUserName(user.getUsername());
 			u.setPassword(passwordEncoder.encode(user.getPassword()));
 			u.setIsActive("Y");

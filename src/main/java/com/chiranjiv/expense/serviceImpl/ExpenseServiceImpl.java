@@ -2,10 +2,8 @@ package com.chiranjiv.expense.serviceImpl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.chiranjiv.expense.entity.Expense;
 import com.chiranjiv.expense.entity.Users;
 import com.chiranjiv.expense.repo.ExpenseRepo;
@@ -27,6 +25,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 	@Override
 	public void postMonthlyExpense(Users user, Expense expense, Map<String, Object> map) {
+		expense.setUserId(user.getUserId());
 		expenseRepo.save(expense);
 		map.put("status", true);
 	}
