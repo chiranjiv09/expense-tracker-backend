@@ -15,10 +15,12 @@ public class CommonUtils {
 
 	public List<ConstData> getConstantListfromGroupNameList(List<String> groupName, List<ConstData> resultList) {
 		if(groupName != null && !groupName.isEmpty()) {
-			return constDataRepo.getAllConstantDataList(groupName);
+			for (String group : groupName) {
+				resultList.addAll(constDataRepo.getAllConstantDataList(group));
+			}
+			return resultList;
 		}
 		return resultList;
-		
 	}
 	
 	
