@@ -7,7 +7,7 @@ import com.chiranjiv.expense.entity.Users;
 
 public interface ExpenseService {
 
-	void getMonthlyExpenseList(Users user, Map<String, Object> map);
+	void getMonthlyExpenseList(Users user, Integer monthId, Map<String, Object> map);
 
 	void postMonthlyExpense(Users user, Expense expense, Map<String, Object> map);
 

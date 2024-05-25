@@ -5,9 +5,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.chiranjiv.expense.entity.Expense;
@@ -45,13 +47,13 @@ public class ExpenseController {
 	}
 	
 	
-	@PostMapping("/get-expense")
-	public ResponseEntity<Map<String, Object>> getMonthlyExpenses(){
+	@GetMapping("/get-monthly-expense")
+	public ResponseEntity<Map<String, Object>> getMonthlyExpenses(@RequestParam Integer monthId){
 		Map<String, Object> map = new HashMap<>();
 		try {
 			Users user = UserHelperUtils.getLoggedInUser();
 			if(user != null) {
-				expenseService.getMonthlyExpenseList(user,map);
+				expenseService.getMonthlyExpenseList(user,monthId,map);
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			}else {
 				map.put("status",false);

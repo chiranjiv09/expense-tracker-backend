@@ -12,23 +12,33 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.Data;
 
 @Data
 @Entity
+@JsonInclude(Include.NON_NULL)
 public class Expense {
 	
 	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer expenseId;
+	
+	@JsonIgnore
 	private Integer userId;
 	private Integer groupId;
 	private Integer categoryId;
 	private String description;
 	private Double price;
+	
 	@CreationTimestamp
+	@JsonIgnore
 	private Date expenseDate;
+	
+	@JsonIgnore
 	private String isActive;
 	
 	@CreationTimestamp
