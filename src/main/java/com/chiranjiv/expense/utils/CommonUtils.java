@@ -1,10 +1,8 @@
 package com.chiranjiv.expense.utils;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.chiranjiv.expense.entity.ConstData;
 import com.chiranjiv.expense.repo.ConstDataRepo;
 

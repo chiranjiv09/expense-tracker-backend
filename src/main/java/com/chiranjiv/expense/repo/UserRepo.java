@@ -7,4 +7,7 @@ public interface UserRepo extends JpaRepository<Users, Integer> {
 
 	Users findByMobile(Long mobile);
 
+
+	Users findByUserIdAndIsActive(Integer userId, String isActive);
+
 }

@@ -43,6 +43,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 		expense.setUserId(user.getUserId());
 		expenseRepo.save(expense);
 		map.put("status", true);
+		map.put("data", expense);
 	}
 
 
