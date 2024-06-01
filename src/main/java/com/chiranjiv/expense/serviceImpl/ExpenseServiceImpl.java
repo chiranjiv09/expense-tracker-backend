@@ -27,11 +27,9 @@ public class ExpenseServiceImpl implements ExpenseService {
 	    YearMonth yearMonth = YearMonth.of(currentYear, month);
 	    LocalDate startDate = yearMonth.atDay(1);
 	    LocalDate endDate = yearMonth.plusMonths(1).atDay(1); 
-	    
 	    // Convert LocalDate to Date
 	    Date startDateDate = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	    Date endDateDate = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
 	    List<Expense> monthlyExpense = expenseRepo.getParticularMonthExpense(user.getUserId(), startDateDate, endDateDate);
 	    map.put("status", true);
 	    map.put("result", monthlyExpense);
