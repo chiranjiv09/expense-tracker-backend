@@ -8,6 +8,6 @@ import com.chiranjiv.expense.entity.Users;
 
 public interface GroupService {
 
-	void groupDataEdit(Users user, Group group, Integer userId, String identifier, Map<String, Object> responseMap);
+	void groupDataEdit(Users user, Group group, String mobile, String identifier, String isDeleted, Map<String, Object> responseMap);
 
 }

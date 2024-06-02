@@ -20,7 +20,6 @@ import lombok.Data;
 @Table(name = "`group`")
 public class Group {
     
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer groupId;

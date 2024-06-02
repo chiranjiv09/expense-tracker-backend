@@ -21,36 +21,79 @@ public class GroupServiceImpl implements GroupService {
 	
 	@Autowired private UserRepo userRepo;
 
+	
+	// need to add loggers as well
 	@Override
-	public void groupDataEdit(Users user, Group group, Integer userId, String identifier, Map<String, Object> responseMap) {
+	public void groupDataEdit(Users user, Group group, String mobile, String identifier, String isDeleted, Map<String, Object> responseMap) {
 		try {
 			if(identifier.equalsIgnoreCase("G")) {
-				if(group.getGroupId() != null) {
-					Group existingGroup = groupRepo.findByGroupId(group.getGroupId());
-					existingGroup.setGroupName(group.getGroupName());
-					groupRepo.save(existingGroup);
-					responseMap.put("group", existingGroup);
-				}else {
-					groupRepo.save(group);
-					responseMap.put("group", group);
-				}
+					if(group.getGroupId() != null) {
+						if(user.getUserId().equals(group.getSuperAdmin())) {
+							Group existingGroup = groupRepo.findByGroupId(group.getGroupId());
+							if(isDeleted.equalsIgnoreCase("Y")) {
+								existingGroup.setIsActive("N");
+								groupRepo.save(existingGroup);
+								responseMap.put("group", existingGroup);
+								responseMap.put("status", true);
+								responseMap.put("message", "group is been successfully updated");
+							}else {
+								existingGroup.setGroupName(group.getGroupName());
+								groupRepo.save(existingGroup);
+								responseMap.put("group", existingGroup);
+								responseMap.put("status", true);
+								responseMap.put("message", "group is been successfully updated");
+							}
+						}else {
+							responseMap.put("status", false);
+							responseMap.put("message", "user id is not matching with super admin");
+						}
+					}else {
+						group.setSuperAdmin(user.getUserId());
+						group.setIsActive("Y");
+						groupRepo.save(group);
+						responseMap.put("group", group);
+						responseMap.put("status", true);
+						responseMap.put("message", "group is been successfully created");
+					}
 			}else if(identifier.equalsIgnoreCase("U")) {
-				GroupMembers member = groupMembersRepo.findByUserIdAndGroupId(userId,group.getGroupId());
-				if(member != null) {
-					member.setIsActive("Y");
+				if(user.getUserId().equals(group.getSuperAdmin())) {
+					Users existingUser = userRepo.findByUserNameAndIsActive(mobile,"Y");
+					if(existingUser != null) {
+						if(isDeleted.equalsIgnoreCase("Y")) {
+							// here we need to check if all expenses clear from the group than only we can remove
+							groupMembersRepo.updateIsActiveOfGroupMember(existingUser.getUserId(), group.getGroupId(), isDeleted);
+							responseMap.put("status", true);
+							responseMap.put("message", "user is successfully deleted from the group ");
+						}else {
+							GroupMembers member = groupMembersRepo.findByUserIdAndGroupIdAndIsActive(existingUser.getUserId(),group.getGroupId(),"Y");
+							if(member != null) {
+								responseMap.put("status", false);
+								responseMap.put("message", "user is already added with mobile :-"+ mobile);
+							}else {
+								member = new GroupMembers();
+								member.setUserId(existingUser.getUserId());
+								member.setUserName(existingUser.getUsername());
+								member.setGroupId(group.getGroupId());
+								member.setIsActive("Y");
+								groupMembersRepo.save(member);
+								responseMap.put("status", true);
+								responseMap.put("member", member);
+								responseMap.put("message", "user is successfully added in the group ");
+							}
+						}
+					}else {
+						responseMap.put("status", false);
+						responseMap.put("message", "user is not found with mobile :-"+ mobile);
+					}
 				}else {
-					member = new GroupMembers();
-					member.setGroupId(group.getGroupId());
-					member.setUserId(userId);
-					Users existingUser = userRepo.findByUserIdAndIsActive(userId,"Y");
-					//existingUser.set
-					
+					responseMap.put("status", false);
+					responseMap.put("message", "user id is not matching with super admin");
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			responseMap.put("status", false);
+			responseMap.put("message", "exception occur while while editing the group data");
 		}
-		
 	}
-
 }

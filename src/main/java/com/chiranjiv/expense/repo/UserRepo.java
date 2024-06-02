@@ -10,4 +10,5 @@ public interface UserRepo extends JpaRepository<Users, Integer> {
 
 	Users findByUserIdAndIsActive(Integer userId, String isActive);
 
+	Users findByUserNameAndIsActive(String userName, String isActive);
 }
