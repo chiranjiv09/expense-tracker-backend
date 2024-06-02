@@ -22,7 +22,6 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class Expense {
 	
-	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer expenseId;
@@ -33,9 +32,6 @@ public class Expense {
 	private Integer categoryId;
 	private String description;
 	private Double price;
-	
-	@CreationTimestamp
-	@JsonIgnore
 	private Date expenseDate;
 	
 	@JsonIgnore

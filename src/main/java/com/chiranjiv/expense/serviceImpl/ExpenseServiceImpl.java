@@ -39,6 +39,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 	@Override
 	public void postMonthlyExpense(Users user, Expense expense, Map<String, Object> map) {
 		expense.setUserId(user.getUserId());
+		expense.setIsActive("Y");
 		expenseRepo.save(expense);
 		map.put("status", true);
 		map.put("data", expense);
