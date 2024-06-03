@@ -18,4 +18,7 @@ public interface ExpenseRepo extends JpaRepository<Expense, Integer> {
 	                                            @Param("startDate") Date startDateDate,
 	                                            @Param("endDate") Date endDateDate);
 
+	@Query("from Expense where groupId=?1 and isActive = ?2")
+	List<Expense> findAllByGroupIdAndIsActive(Integer groupId, String string);
+
 }

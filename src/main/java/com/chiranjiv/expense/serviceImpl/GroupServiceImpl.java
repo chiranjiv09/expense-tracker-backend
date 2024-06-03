@@ -1,12 +1,21 @@
 package com.chiranjiv.expense.serviceImpl;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.chiranjiv.expense.DTO.ExpenseSplitDto;
+import com.chiranjiv.expense.entity.Expense;
 import com.chiranjiv.expense.entity.Group;
 import com.chiranjiv.expense.entity.GroupMembers;
 import com.chiranjiv.expense.entity.Users;
+import com.chiranjiv.expense.repo.ExpenseRepo;
 import com.chiranjiv.expense.repo.GroupMembersRepo;
 import com.chiranjiv.expense.repo.GroupRepo;
 import com.chiranjiv.expense.repo.UserRepo;
@@ -20,6 +29,8 @@ public class GroupServiceImpl implements GroupService {
 	@Autowired private GroupMembersRepo  groupMembersRepo;
 	
 	@Autowired private UserRepo userRepo;
+	
+	@Autowired ExpenseRepo expenseRepo;
 
 	
 	// need to add loggers as well
@@ -96,4 +107,93 @@ public class GroupServiceImpl implements GroupService {
 			responseMap.put("message", "exception occur while while editing the group data");
 		}
 	}
+
+
+	@Override
+	public void addingGroupExpenses(Users user, Expense expense, String isDeleted, Map<String, Object> responseMap) {
+		if(expense.getGroupId() != null) {
+			GroupMembers member = groupMembersRepo.findByUserIdAndGroupIdAndIsActive(user.getUserId(),expense.getGroupId(),"Y");
+			if(member != null) {
+				if(isDeleted != null && isDeleted.equalsIgnoreCase("Y")) {
+					expense.setIsActive("N");
+				}else {
+					expense.setIsActive("Y");
+					expense.setUserId(user.getUserId());
+				}
+				expenseRepo.save(expense);
+			}else {
+				responseMap.put("status", false);
+				responseMap.put("message", "active user is not found in group");
+			}
+		}
+	}
+
+
+	@Override
+	public void getGroupExpenseData(Users user, Integer groupId, Map<String, Object> responseMap) {
+		
+		if(groupId != null) {
+			GroupMembers member = groupMembersRepo.findByUserIdAndGroupIdAndIsActive(user.getUserId(),groupId,"Y");
+			if(member != null) {
+				List<Expense> groupExpense = expenseRepo.findAllByGroupIdAndIsActive(groupId,"Y");
+				if(groupExpense!= null && groupExpense.size() > 0) {
+					createExpenseOwnedData(groupExpense,responseMap);
+				}
+			}else {
+				responseMap.put("status", false);
+				responseMap.put("message", "active user is not found in group");
+			}
+		}
+		
+	}
+
+
+	private void createExpenseOwnedData(List<Expense> groupExpense, Map<String, Object> responseMap) {
+		
+		Map<Integer, Double> userTotalExpenses = new HashMap<>();
+        double totalExpense = 0.0;
+
+        for (Expense expense : groupExpense) {
+            userTotalExpenses.put(expense.getUserId(), userTotalExpenses.getOrDefault(expense.getUserId(), 0.0) + expense.getPrice());
+            totalExpense += expense.getPrice();
+        }
+
+        int numberOfUsers = userTotalExpenses.size();
+        double averageExpense = totalExpense / numberOfUsers;
+
+        List<ExpenseSplitDto> userBalances = userTotalExpenses.entrySet().stream()
+            .map(entry -> new ExpenseSplitDto(entry.getKey(), entry.getValue() - averageExpense))
+            .collect(Collectors.toList());
+
+        userBalances.sort(Comparator.comparingDouble(ub -> ub.getBalance()));
+
+        List<String> transactions = new ArrayList<>();
+        int i = 0, j = userBalances.size() - 1;
+
+        while (i < j) {
+            ExpenseSplitDto creditor = userBalances.get(i);
+            ExpenseSplitDto debtor = userBalances.get(j);
+            double amount = Math.min(-creditor.getBalance(), debtor.getBalance());
+
+            transactions.add("User " + creditor.getUserId() + " needs to give $" + amount + " to User " + debtor.getUserId());
+
+            creditor.setBalance(creditor.getBalance() + amount);
+            debtor.setBalance(debtor.getBalance() - amount);
+            
+            if (creditor.getBalance() == 0) i++;
+            if (debtor.getBalance() == 0) j--;
+        }
+
+        for (String transaction : transactions) {
+            System.out.println(transaction);
+        }
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

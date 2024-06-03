@@ -26,7 +26,6 @@ public class Expense {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer expenseId;
 	
-	@JsonIgnore
 	private Integer userId;
 	private Integer groupId;
 	private Integer categoryId;
