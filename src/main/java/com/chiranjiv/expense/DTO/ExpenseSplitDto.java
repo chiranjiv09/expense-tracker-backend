@@ -6,7 +6,7 @@ import lombok.Data;
 public class ExpenseSplitDto {
 	
 	Integer userId;
-    Double balance;
+    public Double balance;
     
     public ExpenseSplitDto(int userId, double balance) {
         this.userId = userId;
