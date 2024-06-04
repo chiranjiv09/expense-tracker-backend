@@ -56,6 +56,31 @@ public class GroupController {
     }
     
     
+    
+    @PostMapping("get-group-details")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getGroupDetails() {
+
+        Map<String, Object> responseMap = new HashMap<>();
+        try {
+            Users user = UserHelperUtils.getLoggedInUser();
+            if (user != null) {
+                groupService.getGroupOverviewData(user, responseMap);
+                return new ResponseEntity<>(responseMap, HttpStatus.OK);
+            } else {
+                responseMap.put("status", false);
+                responseMap.put("message", "User is not logged-in");
+                return new ResponseEntity<>(responseMap, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            responseMap.put("status", false);
+            responseMap.put("message", "Exception while adding monthly expense");
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(responseMap, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    
     @PostMapping("/add/group-expense")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> addGroupExpense(

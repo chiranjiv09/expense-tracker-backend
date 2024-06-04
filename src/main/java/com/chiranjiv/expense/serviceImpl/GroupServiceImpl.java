@@ -3,6 +3,7 @@ package com.chiranjiv.expense.serviceImpl;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chiranjiv.expense.DTO.ExpenseSplitDto;
+import com.chiranjiv.expense.DTO.GroupAndMemberList;
 import com.chiranjiv.expense.entity.Expense;
 import com.chiranjiv.expense.entity.Group;
 import com.chiranjiv.expense.entity.GroupMembers;
@@ -107,6 +109,25 @@ public class GroupServiceImpl implements GroupService {
 			responseMap.put("message", "exception occur while while editing the group data");
 		}
 	}
+	
+	
+	@Override
+	public void getGroupOverviewData(Users user, Map<String, Object> responseMap) {
+		List<Integer> groupIds = groupMembersRepo.findByUserIdAndIsActive(user.getUserId(),"Y");
+		List<Group> listOfGroup = groupRepo.findByListOfGroupIds(groupIds,"Y");
+		
+		List<GroupAndMemberList> resultList =  new ArrayList<>();
+		for (Group group : listOfGroup) {
+			GroupAndMemberList groupAndMember =  new GroupAndMemberList();
+			groupAndMember.setGroup(group);
+			List<GroupMembers> membersList = groupMembersRepo.findByGroupIdAndIsActive(group.getGroupId(),"Y");
+			groupAndMember.setMemberList(membersList);
+			resultList.add(groupAndMember);
+		}
+		responseMap.put("status", true);
+		responseMap.put("resultList", resultList);
+		
+	}
 
 
 	@Override
@@ -188,6 +209,9 @@ public class GroupServiceImpl implements GroupService {
             System.out.println(transaction);
         }
 	}
+
+
+	
 	
 	
 	

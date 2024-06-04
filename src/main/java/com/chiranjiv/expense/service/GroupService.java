@@ -15,4 +15,6 @@ public interface GroupService {
 
 	void getGroupExpenseData(Users user, Integer groupId, Map<String, Object> map);
 
+	void getGroupOverviewData(Users user, Map<String, Object> responseMap);
+
 }

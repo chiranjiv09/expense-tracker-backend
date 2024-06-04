@@ -31,6 +31,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/v1/register", "/user/v1/auth/login", "/auth/login","/common/getConstantList",
                 		"/expense/add-expense",
                 		"/expense/get-monthly-expense",
+                		"/group/edit-group",
+                		"/group/get-group-details",
                 		"/user/v1/home-page").permitAll()
                 .anyRequest().authenticated()
                 .and()
